@@ -11,4 +11,4 @@ spec:
     port: 443
     targetPort: 10443
   selector:
-    name: hocs-data-service
+    name: hocs-reporting-service
