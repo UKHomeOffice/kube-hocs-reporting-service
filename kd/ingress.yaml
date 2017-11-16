@@ -5,17 +5,17 @@ metadata:
   annotations:
     kubernetes.io/tls-acme: "true"
     ingress.kubernetes.io/secure-backends: "true"
-  name: hocs-data-service
+  name: hocs-reporting-service
 spec:
   rules:
-  - host: dataservice.{{.DNS_PREFIX}}hocs.homeoffice.gov.uk
+  - host: reportingservice.{{.DNS_PREFIX}}hocs.homeoffice.gov.uk
     http:
       paths:
       - backend:
-          serviceName: hocs-data-service
+          serviceName: hocs-reporting-service
           servicePort: 443
         path: /
   tls:
   - hosts:
-    - dataservice.{{.DNS_PREFIX}}hocs.homeoffice.gov.uk
-    secretName: letsencrypt-hocs-data-service
+    - reportingservice.{{.DNS_PREFIX}}hocs.homeoffice.gov.uk
+    secretName: letsencrypt-hocs-reporting-service
