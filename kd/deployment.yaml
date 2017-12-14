@@ -50,7 +50,7 @@ spec:
                 key: database_name
           - name: REPORTING_SCHEMA_NAME
             value:
-              'hocs_reportingservice'
+              'hocs_reporting'
           - name: REPORTING_DB_USERNAME
             valueFrom:
               secretKeyRef:
