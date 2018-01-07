@@ -105,12 +105,12 @@ spec:
           - name: DB_SCHEMA_NAME
             value:
               'hocs_reporting'
-          - name: DB_USERNAME
+          - name: DB_USER
             valueFrom:
               secretKeyRef:
                 name: hocs-rds-access
                 key: username
-          - name: DB_PASSWORD
+          - name: DB_PASS
             valueFrom:
               secretKeyRef:
                 name: hocs-rds-access
