@@ -83,10 +83,10 @@ spec:
             value: '/data/truststore.jks'
           - name: SERVER_PORT
             value: '8080'
-          - name: ENDPOINTS_INFO_ENABLED
+          - name: MANAGEMENT_ENDPOINTS_INFO_ENABLED
             value: 'false'
           - name: SPRING_PROFILES_ACTIVE
-            value: 'postgres, rabbitmq'
+            value: 'postgres,rabbitmq'
           - name: DB_HOST
             valueFrom:
               secretKeyRef:
@@ -115,7 +115,7 @@ spec:
               secretKeyRef:
                 name: hocs-rds-access
                 key: password
-          - name: ENV_RABBIT_MQ_HOST
+          - name: RABBIT_MQ_HOST
             value:
               'rabbitmq'      
         resources:
