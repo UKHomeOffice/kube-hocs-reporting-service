@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+export KUBE_NAMESPACE=${KUBE_NAMESPACE}
+export KUBE_SERVER=${KUBE_SERVER}
+export KUBE_TOKEN=${KUBE_TOKEN}
 
 if [ $ENVIRONMENT == "prod" ]
 then
