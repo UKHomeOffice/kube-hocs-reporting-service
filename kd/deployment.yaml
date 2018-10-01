@@ -6,7 +6,7 @@ metadata:
   labels:
     version: {{.VERSION}}
 spec:
-  replicas: 1
+  replicas: {{.REPLICAS}}
   selector:
     matchLabels:
       name: hocs-reporting-service
@@ -19,9 +19,10 @@ spec:
     metadata:
       labels:
         name: hocs-reporting-service
+        
         version: {{.VERSION}}
     spec:
-     imagePullSecrets:
+      imagePullSecrets:
         - name: registrykey
       initContainers:
         - name: truststore
@@ -78,7 +79,7 @@ spec:
               readOnly: true
 
         - name: proxy
-          image: quay.io/ukhomeofficedigital/nginx-proxy:v3.2.9
+          image: quay.io/ukhomeofficedigital/nginx-proxy:v3.2.11
           imagePullPolicy: Always
           securityContext:
             runAsNonRoot: true
@@ -125,85 +126,94 @@ spec:
           ports:
             - name: https
               containerPort: 10443
-      - name: hocs-reporting-service
-        image: quay.io/ukhomeofficedigital/hocs-reporting-service:{{.VERSION}}
-        env:
-          - name: JAVA_OPTS
-            value: '-Xms150m -Xmx768m -Djavax.net.ssl.trustStore=/data/truststore.jks'
-          - name: JDK_TRUST_FILE
-            value: '/data/truststore.jks'
-          - name: SERVER_PORT
-            value: '8080'
-          - name: MANAGEMENT_ENDPOINTS_INFO_ENABLED
-            value: 'false'
-          - name: SPRING_PROFILES_ACTIVE
-            value: 'postgres'
-          - name: DB_HOST
-            valueFrom:
-              secretKeyRef:
-                name: hocs-rds-access
-                key: endpoint
-          - name: DB_PORT
-            valueFrom:
-              secretKeyRef:
-                name: hocs-rds-access
-                key: port
-          - name: DB_NAME
-            valueFrom:
-              secretKeyRef:
-                name: hocs-rds-access
-                key: database_name
-          - name: DB_SCHEMA_NAME
-            value:
-              'hocs_reporting_001'
-          - name: DB_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: hocs-rds-access
-                key: username
-          - name: DB_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: hocs-rds-access
-                key: password
-          - name: RABBIT_MQ_HOST
-            value:
-              'rabbitmq'      
-        resources:
-          limits:
-            memory: 1024Mi
-            cpu: 300m
-          requests:
-            memory: 484Mi
-            cpu: 100m
-        ports:
-          - name: http
-            containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: /actuator/healthz
-            port: http
-            httpHeaders:
-              - name: X-probe
-                value: kubelet
-          initialDelaySeconds: 180
-          periodSeconds: 20
-          timeoutSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /actuator/healthz
-            port: http
-            httpHeaders:
-              - name: X-probe
-                value: kubelet
-          initialDelaySeconds: 180
-          periodSeconds: 20
-          timeoutSeconds: 10
-        imagePullPolicy: Always
-        volumeMounts:
-          - mountPath: /data
-            name: keystore
-            readOnly: true
+        - name: hocs-reporting-service
+          image: quay.io/ukhomeofficedigital/hocs-reporting-service:{{.VERSION}}
+          imagePullPolicy: Always
+          securityContext:
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - SETUID
+                - SETGID
+
+
+
+          env:
+            - name: JAVA_OPTS
+              value: '-Xms150m -Xmx768m -Djavax.net.ssl.trustStore=/etc/keystore/truststore.jks
+            - name: JDK_TRUST_FILE
+              value: '/etc/keystore/truststore.jks'
+            - name: SERVER_PORT
+              value: '8080'
+            - name: ENDPOINTS_INFO_ENABLED
+              value: 'false'
+            - name: SPRING_PROFILES_ACTIVE
+              value: 'postgres'
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: hocs-rds-access
+                  key: endpoint
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: hocs-rds-access
+                  key: port
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: hocs-rds-access
+                  key: database_name
+            - name: DB_SCHEMA_NAME
+              value:
+                'hocs_reporting_001'
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: hocs-rds-access
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hocs-rds-access
+                  key: password
+            - name: RABBIT_MQ_HOST
+              value:
+                'rabbitmq'      
+          resources:
+            limits:
+              cpu: 350m
+              memory: 1024Mi
+            requests:
+              cpu: 100m
+              memory: 484Mi
+          ports:
+            - name: http
+              containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: http
+              httpHeaders:
+                - name: X-probe
+                  value: kubelet
+            initialDelaySeconds: 180
+            periodSeconds: 20
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: http
+              httpHeaders:
+                - name: X-probe
+                  value: kubelet
+            initialDelaySeconds: 240
+            periodSeconds: 20
+            timeoutSeconds: 10
+          volumeMounts:
+            - mountPath: /etc/keystore
+              name: keystore
+              readOnly: true
       volumes:
         - name: keystore
           emptyDir:
