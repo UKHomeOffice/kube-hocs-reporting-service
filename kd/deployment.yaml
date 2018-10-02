@@ -130,7 +130,6 @@ spec:
           image: quay.io/ukhomeofficedigital/hocs-reporting-service:{{.VERSION}}
           imagePullPolicy: Always
           securityContext:
-            runAsNonRoot: true
             capabilities:
               drop:
                 - SETUID
