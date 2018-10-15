@@ -9,7 +9,7 @@ fi
 
 if [[ ${ENVIRONMENT} == "prod" ]] ; then
     echo "deploy ${VERSION} to prod namespace, using HOCS_REPORTING_SERVICE_PROD drone secret"
-    export KUBE_TOKEN=${HOCS_REPORTING_SERVICE}
+    export KUBE_TOKEN=${HOCS_REPORTING_SERVICE_PROD}
     export REPLICAS="2"
     export DNS_PREFIX=
 else
