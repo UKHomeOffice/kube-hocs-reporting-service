@@ -152,38 +152,38 @@ spec:
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
-                  name: hocs-rds-access
+                  name: {{.KUBE_NAMESPACE}}-postgres-rds
                   key: endpoint
             - name: DB_PORT
               valueFrom:
                 secretKeyRef:
-                  name: hocs-rds-access
+                  name: {{.KUBE_NAMESPACE}}-postgres-rds
                   key: port
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
-                  name: hocs-rds-access
-                  key: database_name
+                  name: {{.KUBE_NAMESPACE}}-postgres-rds
+                  key: default_db
             - name: DB_SCHEMA_NAME
               value:
                 'hocs_reporting_001'
             - name: DB_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: hocs-rds-access
+                  name: {{.KUBE_NAMESPACE}}-postgres-rds
                   key: username
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: hocs-rds-access
+                  name: {{.KUBE_NAMESPACE}}-postgres-rds
                   key: password
             - name: RABBIT_MQ_HOST
               value:
                 'rabbitmq'      
           resources:
             limits:
-              cpu: 350m
-              memory: 1024Mi
+              cpu: 700m
+              memory: 2048Mi
             requests:
               cpu: 100m
               memory: 484Mi
