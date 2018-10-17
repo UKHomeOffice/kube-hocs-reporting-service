@@ -192,22 +192,22 @@ spec:
               containerPort: 8080
           livenessProbe:
             httpGet:
-              path: /actuator/health
+              path: /healthz
               port: http
               httpHeaders:
                 - name: X-probe
                   value: kubelet
-            initialDelaySeconds: 180
+            initialDelaySeconds: 100
             periodSeconds: 20
             timeoutSeconds: 10
           readinessProbe:
             httpGet:
-              path: /actuator/health
+              path: /healthz
               port: http
               httpHeaders:
                 - name: X-probe
                   value: kubelet
-            initialDelaySeconds: 240
+            initialDelaySeconds: 100
             periodSeconds: 20
             timeoutSeconds: 10
           volumeMounts:
