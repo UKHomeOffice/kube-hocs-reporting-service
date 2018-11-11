@@ -8,6 +8,7 @@ metadata:
     ingress.kubernetes.io/auth-type: basic
     ingress.kubernetes.io/auth-secret: hocs-basic-auth
     ingress.kubernetes.io/auth-realm: "Authentication Required"
+    ingress.kubernetes.io/whitelist-source-range: {{.IP_WHITELIST}}
     stable.k8s.psg.io/kcm.provider: http
   labels:
     stable.k8s.psg.io/kcm.class: default
@@ -21,7 +22,15 @@ spec:
           serviceName: hocs-reporting-service
           servicePort: 443
         path: /
+  - host: {{.LEGACY_DOMAIN_NAME}}
+    http:
+      paths:
+      - backend:
+          serviceName: hocs-reporting-service
+          servicePort: 443
+        path: /
   tls:
   - hosts:
     - {{.DOMAIN_NAME}}
+    - {{.LEGACY_DOMAIN_NAME}}
     secretName: letsencrypt-hocs-reporting-service
